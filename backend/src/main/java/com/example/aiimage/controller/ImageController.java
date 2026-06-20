@@ -1,9 +1,11 @@
 package com.example.aiimage.controller;
 
 import com.example.aiimage.model.GenerationHistory;
+import com.example.aiimage.model.User;
 import com.example.aiimage.repository.HistoryRepository;
 import com.example.aiimage.service.ImageGenerationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,21 +16,20 @@ import java.util.List;
 public class ImageController {
 
     @Autowired
-    private ImageGenerationService imageGenerationService;
-
+    private ImageGenerationService imageService;
     @Autowired
-    private HistoryRepository historyRepository;   // NEW
+    private HistoryRepository historyRepository;
 
     @PostMapping("/generate")
-    public ImageResponse generateImage(@RequestBody GenerateRequest request) {
-        String imageUrl = imageGenerationService.generateImage(request.getPrompt());
+    public ImageResponse generateImage(@RequestBody GenerateRequest request,
+                                       @AuthenticationPrincipal User user) {
+        String imageUrl = imageService.generateImage(request.getPrompt(), user);
         return new ImageResponse(imageUrl, request.getPrompt());
     }
 
-    // NEW endpoint to get history
     @GetMapping("/history")
-    public List<GenerationHistory> getHistory() {
-        return historyRepository.findAllByOrderByCreatedAtDesc();
+    public List<GenerationHistory> getHistory(@AuthenticationPrincipal User user) {
+        return historyRepository.findByUserOrderByCreatedAtDesc(user);
     }
 
     // Inner DTOs (unchanged)

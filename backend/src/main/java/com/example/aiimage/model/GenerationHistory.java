@@ -20,16 +20,17 @@ public class GenerationHistory {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "user_id")
-    private String userId; // optional, for later authentication
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;// optional, for later authentication
 
     // Constructors
     public GenerationHistory() {}
 
-    public GenerationHistory(String prompt, String imageUrl, String userId) {
+    public GenerationHistory(String prompt, String imageUrl, User user) {
         this.prompt = prompt;
         this.imageUrl = imageUrl;
-        this.userId = userId;
+        this.user = user;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -46,6 +47,6 @@ public class GenerationHistory {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }

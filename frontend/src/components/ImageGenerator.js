@@ -19,15 +19,17 @@ const ImageGenerator = ({ onNewImage }) => {
     setError('');
     setImageUrl('');
 
-    try {
-      const response = await api.post('/images/generate', { prompt });
-      const url = response.data.imageUrl;
-      setImageUrl(url);
-      onNewImage(); // Refresh history after generation
-    } catch (err) {
-      setError('Failed to generate image. Please try again.');
-      console.error(err);
-    } finally {
+
+   try {
+  const response = await api.post('/images/generate', { prompt });
+  const url = response.data.imageUrl;
+  setImageUrl(url);
+  setError('');          // clear any previous error
+  onNewImage();          // refresh history
+} catch (err) {
+  setError('Failed to generate image. Please try again.');
+  console.error(err);
+} finally {
       setLoading(false);
     }
   };
